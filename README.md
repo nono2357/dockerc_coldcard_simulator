@@ -1,6 +1,6 @@
 https://github.com/Coldcard/firmware
 
-# Quick-start guide
+# Linux quick-start guide
 
 1. Build the image (one-time, ~10–15 min due to submodule compilation):
 
@@ -17,7 +17,7 @@ xhost +local:docker
 3. Run the simulator:
 
 ```bash
-docker compose up
+docker compose up -d
 ```
 
 4. Place files on the simulated MicroSD by copying them into the named volume's MicroSD/ subdirectory, or by using a bind-mount override in a docker-compose.override.yml.
