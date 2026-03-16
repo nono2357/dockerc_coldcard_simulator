@@ -25,8 +25,8 @@ docker compose up
 
 # Key design decisions
 
-- Ubuntu 22.04 base:	Explicitly supported by the README; avoids needing ubuntu24_mpy.patch
-- pysdl2-dll pip package	Provides the SDL2 runtime library in Python without relying solely on the system libsdl2
-- VOLUME for unix/work	Persists simulated MicroSD, virtual disk, and wallet settings across container restarts
-- ENTRYPOINT + empty CMD	Allows passing extra simulator.py flags via docker compose run coldcard-simulator --flag
+- Ubuntu 22.04 base: Explicitly supported by the README; avoids needing ubuntu24_mpy.patch
+- pysdl2-dll pip package: Provides the SDL2 runtime library in Python without relying solely on the system libsdl2
+- VOLUME for unix/work:	Persists simulated MicroSD, virtual disk, and wallet settings across container restarts
+- ENTRYPOINT + empty CMD: Allows passing extra simulator.py flags via docker compose run coldcard-simulator --flag
 - restart: "no"	The simulator is interactive; it should not auto-restart on exit
