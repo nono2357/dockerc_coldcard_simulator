@@ -1,0 +1,55 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# ColdCard Firmware Simulator — Docker Compose
+#
+# DISPLAY / X11 prerequisites (run on HOST before `docker compose up`):
+#
+#   Linux  : xhost +local:docker
+#
+#   macOS  : Install XQuartz, start it, then:
+#              defaults write org.macosforge.xquartz.X11 enable_iglx -bool true
+#              xhost +localhost
+#            Set DISPLAY=host.docker.internal:0 in a .env file.
+#
+#   Windows: Install VcXsrv or Xming with "Disable access control" checked.
+#            Create a .env file with: DISPLAY=host.docker.internal:0.0
+#
+# Basic workflow:
+#   docker compose build      # build image (~10-15 min first time)
+#   docker compose up         # launch simulator window
+#   docker compose down       # stop and clean up container
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+  coldcard-simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: coldcard-simulator:latest
+    container_name: coldcard-simulator
+
+    # ── X11 display forwarding ──────────────────────────────────────────────
+    environment:
+      - DISPLAY=${DISPLAY:-:0}   # override via .env for macOS/Windows
+      - COLDCARD_MODEL=q1        # or mk4
+    volumes:
+      # X11 Unix socket — required for SDL2/GUI rendering on Linux
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+      # Persistent simulator storage:
+      #   work/MicroSD/  → simulated MicroSD card files
+      #   work/VirtDisk/ → simulated virtual disk files
+      #   work/settings/ → encrypted simulator settings (*.aes)
+      - coldcard-work:/opt/coldcard/unix/work
+
+    # Keep stdin/tty open so the simulator receives keyboard input
+    stdin_open: true
+    tty: true
+
+    # Do not auto-restart; the simulator is an interactive foreground process
+    restart: "no"
+
+# ── Named volumes ─────────────────────────────────────────────────────────────
+volumes:
+  coldcard-work:
+    driver: local
+
